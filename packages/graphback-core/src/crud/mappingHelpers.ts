@@ -1,6 +1,9 @@
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
+import { defaultColumnNameTransform, lowerCaseFirstChar, upperCaseFirstChar } from '../db';
+import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { GraphbackOperationType } from './GraphbackOperationType';
-
 
 // TODO is is esential to document this element
 
@@ -26,7 +29,7 @@ import { GraphbackOperationType } from './GraphbackOperationType';
  */
 export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
   let finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.FIND_ALL && GraphbackOperationType.FIND) {
+  if (action === GraphbackOperationType.FIND_ALL || action === GraphbackOperationType.FIND) {
     finalName = pluralize(finalName);
   }
 
@@ -62,17 +65,13 @@ export const getInputTypeName = (typeName: string): string => {
   return `${typeName}Input`;
 }
 
-
-// TODO this is db level mapping. To be moved
-export const getTableName = (typeName: string): string => {
-  return typeName.toLowerCase()
+export function isModelType(graphqlType: GraphQLObjectType): boolean {
+  return !!parseMarker('model', graphqlType.description);
 }
 
-// TODO this is db level mapping. To be moved
-export const getIdFieldName = (type: any): string => {
-  return 'id'
+export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {
+  return modelTypes.filter(isModelType);
 }
-
 
 // tslint:disable-next-line: no-reserved-keywords
 export function getRelationFieldName(field: any, type: any) {
@@ -87,16 +86,8 @@ export function getRelationFieldName(field: any, type: any) {
     fieldName = field.annotations.OneToMany.field;
   }
   else {
-    fieldName = lowerCaseFirstChar(type.name);
+    fieldName = defaultColumnNameTransform(type.name, 'to-db');
   }
 
   return fieldName;
-}
-
-function lowerCaseFirstChar(text: string) {
-  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
-}
-
-function upperCaseFirstChar(text: string) {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }

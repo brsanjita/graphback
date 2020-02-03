@@ -1,4 +1,4 @@
-import { GraphbackCoreMetadata, GraphbackPlugin, ModelDefinition, getSubscriptionName, GraphbackOperationType, getFieldName, getBaseType } from '@graphback/core'
+import { getBaseType, getFieldName, getSubscriptionName, GraphbackCoreMetadata, GraphbackOperationType, GraphbackPlugin, ModelDefinition } from '@graphback/core'
 import { mergeSchemas } from "@graphql-toolkit/schema-merging"
 import { GraphQLField, GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql';
 import { gqlSchemaFormatter, jsSchemaFormatter, tsSchemaFormatter } from '../writer/schemaFormatters';
@@ -85,10 +85,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         let subscriptionTypes = {};
 
         for (const model of Object.values(models)) {
-            if (model.crudOptions.disableGen) {
-                continue;
-            }
-
             const modelInputType = this.createInputTypes(model);
             queryTypes = this.createQueries(model, queryTypes, modelInputType);
             mutationTypes = this.createMutations(model, mutationTypes, modelInputType);
