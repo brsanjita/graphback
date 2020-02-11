@@ -1,4 +1,4 @@
-import { getFieldName, getSubscriptionName, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { getFieldName, getSubscriptionName, GraphbackCRUDOperationType, ModelDefinition } from '@graphback/core';
 import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
 
 /**
@@ -35,7 +35,7 @@ export class LayeredRuntimeResolverGenerator {
       // TODO this should use mapping
       const objectName = resolverElement.graphqlType.name.toLowerCase();
       if (resolverElement.crudOptions.create) {
-        const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.CREATE);
+        const resolverCreateField = getFieldName(resolverElement.graphqlType.name, GraphbackCRUDOperationType.CREATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[resolverCreateField] = (parent: any, args: any, context: any) => {
           return this.service.create(objectName, args.input, {
@@ -44,7 +44,7 @@ export class LayeredRuntimeResolverGenerator {
         }
       }
       if (resolverElement.crudOptions.update) {
-        const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.UPDATE);
+        const updateField = getFieldName(resolverElement.graphqlType.name, GraphbackCRUDOperationType.UPDATE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[updateField] = (parent: any, args: any, context: any) => {
           return this.service.update(objectName, args.input, {
@@ -53,7 +53,7 @@ export class LayeredRuntimeResolverGenerator {
         }
       }
       if (resolverElement.crudOptions.delete) {
-        const deleteField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.DELETE);
+        const deleteField = getFieldName(resolverElement.graphqlType.name, GraphbackCRUDOperationType.DELETE);
         // tslint:disable-next-line: no-any
         resolvers.Mutation[deleteField] = (parent: any, args: any, context: any) => {
           return this.service.delete(objectName, args.id, args.input, {
@@ -63,14 +63,14 @@ export class LayeredRuntimeResolverGenerator {
       }
 
       if (resolverElement.crudOptions.findAll) {
-        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND_ALL);
+        const findAllField = getFieldName(resolverElement.graphqlType.name, GraphbackCRUDOperationType.FIND_ALL);
         // tslint:disable-next-line: no-any
         resolvers.Query[findAllField] = (parent: any, args: any, context: any) => {
           return this.service.findAll(objectName, context)
         }
       }
       if (resolverElement.crudOptions.find) {
-        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackOperationType.FIND);
+        const findField = getFieldName(resolverElement.graphqlType.name, GraphbackCRUDOperationType.FIND);
         // tslint:disable-next-line: no-any
         resolvers.Query[findField] = (parent: any, args: any, context: any) => {
           return this.service.findBy(objectName, args.fields, context)
@@ -100,7 +100,7 @@ export class LayeredRuntimeResolverGenerator {
   private createSubscriptions(resolverElement: ModelDefinition, resolvers: any, objectName: string) {
     const name = resolverElement.graphqlType.name;
     if (resolverElement.crudOptions.create && resolverElement.crudOptions.subCreate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.CREATE)
+      const operation = getSubscriptionName(name, GraphbackCRUDOperationType.CREATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
@@ -110,7 +110,7 @@ export class LayeredRuntimeResolverGenerator {
     }
 
     if (resolverElement.crudOptions.update && resolverElement.crudOptions.subUpdate) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.UPDATE)
+      const operation = getSubscriptionName(name, GraphbackCRUDOperationType.UPDATE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {
@@ -120,7 +120,7 @@ export class LayeredRuntimeResolverGenerator {
     }
 
     if (resolverElement.crudOptions.delete && resolverElement.crudOptions.subDelete) {
-      const operation = getSubscriptionName(name, GraphbackOperationType.DELETE)
+      const operation = getSubscriptionName(name, GraphbackCRUDOperationType.DELETE)
       resolvers.Subscription[operation] = {
         // tslint:disable-next-line: no-any
         subscribe: (_: any, __: any, context: any) => {

@@ -1,4 +1,4 @@
-import { getFieldName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackOperationType, ModelDefinition } from '@graphback/core';
+import { getFieldName, getTableOrColumnName, GraphbackCRUDGeneratorConfig, GraphbackCRUDOperationType, ModelDefinition } from '@graphback/core';
 import { GraphQLObjectType, GraphQLObjectType as string, GraphQLSchema } from 'graphql';
 import { getCustomTypeResolverFieldNames } from '../util/getCustomResolverFieldNames';
 import { blankResolver, blankSubscription, createTemplate, deletedSubscriptionTemplate, deleteTemplate, findAllTemplate, findTemplate, newSubscriptionTemplate, updatedSubscriptionTemplate, updateTemplate } from './resolverTemplates';
@@ -57,16 +57,16 @@ export function createMutations(modelType: GraphQLObjectType, crudOptions: Graph
     const modelName = modelType.name;
 
     if (crudOptions.create) {
-        const fieldName = getFieldName(modelName, GraphbackOperationType.CREATE);
+        const fieldName = getFieldName(modelName, GraphbackCRUDOperationType.CREATE);
         // tslint:disable-next-line: no-any
         mutations[fieldName] = createTemplate(tableName, crudOptions.subCreate)
     }
     if (crudOptions.update) {
-        const fieldName = getFieldName(modelName, GraphbackOperationType.UPDATE);
+        const fieldName = getFieldName(modelName, GraphbackCRUDOperationType.UPDATE);
         mutations[fieldName] = updateTemplate(tableName, crudOptions.update);
     }
     if (crudOptions.delete) {
-        const fieldName = getFieldName(modelName, GraphbackOperationType.DELETE);
+        const fieldName = getFieldName(modelName, GraphbackCRUDOperationType.DELETE);
         mutations[fieldName] = deleteTemplate(tableName, crudOptions.delete);
     }
 
@@ -80,11 +80,11 @@ export function createQueries(modelType: GraphQLObjectType, crudOptions: Graphba
     const modelName = modelType.name;
 
     if (crudOptions.find) {
-        const fieldName = getFieldName(modelName, GraphbackOperationType.FIND);
+        const fieldName = getFieldName(modelName, GraphbackCRUDOperationType.FIND);
         queries[fieldName] = findTemplate(tableName);
     }
     if (crudOptions.findAll) {
-        const fieldName = getFieldName(modelName, GraphbackOperationType.FIND_ALL);
+        const fieldName = getFieldName(modelName, GraphbackCRUDOperationType.FIND_ALL);
         queries[fieldName] = findAllTemplate(tableName);
     }
 

@@ -3,7 +3,7 @@ import { parseMarker } from 'graphql-metadata';
 import * as pluralize from 'pluralize'
 import { defaultColumnNameTransform, lowerCaseFirstChar, upperCaseFirstChar } from '../db';
 import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
-import { GraphbackOperationType } from './GraphbackOperationType';
+import { GraphbackCRUDOperationType } from './GraphbackCRUDOperationType';
 
 /**
  * Graphback CRUD Mapping helpers
@@ -25,9 +25,9 @@ import { GraphbackOperationType } from './GraphbackOperationType';
  * @param typeName 
  * @param action 
  */
-export const getFieldName = (typeName: string, action: GraphbackOperationType): string => {
+export const getFieldName = (typeName: string, action: GraphbackCRUDOperationType): string => {
   let finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.FIND_ALL || action === GraphbackOperationType.FIND) {
+  if (action === GraphbackCRUDOperationType.FIND_ALL || action === GraphbackCRUDOperationType.FIND) {
     finalName = pluralize(finalName);
   }
 
@@ -37,17 +37,17 @@ export const getFieldName = (typeName: string, action: GraphbackOperationType): 
 /**
  * Provides naming patterns for CRUD subscriptions 
  */
-export const getSubscriptionName = (typeName: string, action: GraphbackOperationType, ): string => {
+export const getSubscriptionName = (typeName: string, action: GraphbackCRUDOperationType, ): string => {
   const finalName = upperCaseFirstChar(typeName);
-  if (action === GraphbackOperationType.CREATE) {
+  if (action === GraphbackCRUDOperationType.CREATE) {
     return `new${finalName}`
   }
 
-  if (action === GraphbackOperationType.UPDATE) {
+  if (action === GraphbackCRUDOperationType.UPDATE) {
     return `updated${finalName}`
   }
 
-  if (action === GraphbackOperationType.DELETE) {
+  if (action === GraphbackCRUDOperationType.DELETE) {
     return `deleted${finalName}`
   }
 
