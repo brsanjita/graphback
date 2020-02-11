@@ -19,7 +19,6 @@ Then developers can create runtime instance:
     const modelString = `type Test ...`
     
     // Create backend
-    // TODO change that to reflect actual interface
     const backend = new GraphQLBackendCreator(modelString, graphbackOptions);
     const dbClientProvider = new PgKnexDBDataProvider(client);
     const runtime = await backend.createRuntime(dbClientProvider);

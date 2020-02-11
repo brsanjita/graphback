@@ -24,7 +24,6 @@ async function start() {
   const generateConfig = await config!.getDefault().extension('graphback');
 
   // connect to db
-  // TODO Embed knex as part of the runtime codegeneration
   const db = knex({
     client: generateConfig.dbmigrations.database,
     connection: generateConfig.dbmigrations.dbConfig,

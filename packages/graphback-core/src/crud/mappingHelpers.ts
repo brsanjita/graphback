@@ -5,8 +5,6 @@ import { defaultColumnNameTransform, lowerCaseFirstChar, upperCaseFirstChar } fr
 import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
 import { GraphbackOperationType } from './GraphbackOperationType';
 
-// TODO is is esential to document this element
-
 /**
  * Graphback CRUD Mapping helpers
  */
@@ -67,11 +65,6 @@ export const getInputTypeName = (typeName: string): string => {
 
 export function isModelType(graphqlType: GraphQLObjectType): boolean {
   return !!parseMarker('model', graphqlType.description);
-}
-
-// TODO this is db level mapping. To be moved
-export const getIdFieldName = (graphqlType: any): string => {
-  return 'id'
 }
 
 export function getUserModels(modelTypes: GraphQLObjectType[]): GraphQLObjectType[] {

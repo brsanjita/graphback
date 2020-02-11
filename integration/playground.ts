@@ -24,6 +24,4 @@ import { schema } from './schemas/relations-schema.graphql';
   // retrieve the server url
   console.log(`Running on ${await server.httpUrl()}`);
 
-  // TODO test actual runtime execution logic by executing queries and mutations
-
 })().catch(e => console.error(e))

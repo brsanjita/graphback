@@ -11,5 +11,4 @@
 **Repository**: https://github.com/aerogear/graphback/
 
 ## Graphback-Codegen-Resolvers 
-// TODO update README
 

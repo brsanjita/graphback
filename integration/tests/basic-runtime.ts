@@ -56,7 +56,6 @@ async function graphbackRuntimeWorkflow(server: TestxServer, t: ExecutionContext
   const client = new ApolloClient({ uri, fetch });
   await createItem(client, mutations, t);
   await updateItem(client, t, queries, mutations);
-  // TODO test db updates (blocked by SQLLite issue)
 }
 
 async function createServer(schema: string) {

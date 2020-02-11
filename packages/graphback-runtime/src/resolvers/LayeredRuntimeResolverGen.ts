@@ -16,7 +16,6 @@ import { GraphbackCRUDService } from '../service/GraphbackCRUDService'
  * }
  * ```
  */
-// TODO
 export class LayeredRuntimeResolverGenerator {
   private service: GraphbackCRUDService
   private models: ModelDefinition[];

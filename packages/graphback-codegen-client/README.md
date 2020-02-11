@@ -15,7 +15,3 @@
 Generator for client side queries
 
 ## Usage
-
-// TODO UPDATE README
-
- 

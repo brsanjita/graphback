@@ -124,7 +124,6 @@ export class SchemaCRUDPlugin extends GraphbackPlugin {
         const modelFields = Object.values(model.graphqlType.getFields());
 
         return new GraphQLInputObjectType({
-            // TODO
             name: `${model.graphqlType.name}Input`,
             fields: () => (modelFields.filter((field: GraphQLField<any, any>) => {
                 const fieldBaseType = getBaseType(field.type);

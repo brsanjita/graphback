@@ -54,7 +54,6 @@ export function getModelMappingByName(name: string, mappings: ModelTableMapping[
     return mappings.find((m: ModelTableMapping) => m.typeName === name);
 }
 
-// TODO: Define interface for data
 export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): DataMapping => {
     const mappedData: DataMapping = {
         data
@@ -66,6 +65,7 @@ export const getUpdateArgs = (idField: string, data: any, fieldMap?: any): DataM
             value: data[idField]
         }
 
+        // tslint:disable-next-line: no-dynamic-delete
         delete mappedData.data[idField];
     }
 

@@ -16,5 +16,3 @@ Generator for full GraphQL Schema.
 Generator accepts Graphback model as input and uses it to generate fully functional schema
 
 ## Usage
-
-// TODO
