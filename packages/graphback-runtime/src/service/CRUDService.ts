@@ -1,5 +1,5 @@
 import { GraphbackOperationType, ModelTableMap, upperCaseFirstChar } from "@graphback/core"
-import DataLoader from "dataloader";
+import * as DataLoader from "dataloader";
 import { GraphQLObjectType } from 'graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { GraphbackDataProvider } from "../data/GraphbackDataProvider";
