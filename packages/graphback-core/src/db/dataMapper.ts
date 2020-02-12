@@ -1,21 +1,21 @@
-import { ModelTableMap } from './modelTableMapper';
+import { ModelTableMap } from './buildModelTableMap';
 
 export interface TableDataMap {
-    id?: TableID
+    idField?: TableID
     table?: string
     data?: any
     fieldMap?: any
 }
 
 export interface TableID {
-    field: string
+    name: string
     value?: any
 }
 
 export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
     const idField = modelMap.idField;
     const tableDataMap: TableDataMap = {
-        id: getTableId(idField, data),
+        idField: getTableId(idField, data),
         data
     }
 
@@ -36,7 +36,7 @@ function getTableId(idField: string, data: any = {}): TableID {
     }
 
     return {
-        field: idField,
+        name: idField,
         value
     }
 }

@@ -1,4 +1,4 @@
-import { buildModelMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
+import { buildModelTableMap, getDatabaseArguments, ModelTableMap } from '@graphback/core';
 import { GraphQLObjectType } from 'graphql';
 import * as Knex from 'knex';
 import { AdvancedFilter, GraphbackDataProvider } from './GraphbackDataProvider';
@@ -26,7 +26,7 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
     this.db = db;
     this.baseType = baseType;
     // TODO build and use mapping here
-    this.tableMap = buildModelMap(baseType);
+    this.tableMap = buildModelTableMap(baseType);
     this.tableName = this.tableMap.tableName;
   }
 
@@ -44,13 +44,13 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
   }
 
   public async update(data: Type): Promise<Type> {
-    const { id, data: updateData } = getDatabaseArguments(this.tableMap, data);
+    const { idField, data: updateData } = getDatabaseArguments(this.tableMap, data);
 
     // tslint:disable-next-line: await-promise
-    const updateResult = await this.db(this.tableName).update(updateData).where(id.field, '=', id.value);
+    const updateResult = await this.db(this.tableName).update(updateData).where(idField.name, '=', idField.value);
     if (updateResult === 1) {
       // tslint:disable-next-line: await-promise
-      const dbResult = await this.db.select().from(this.tableName).where(id.field, '=', id.value);
+      const dbResult = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
       if (dbResult && dbResult[0]) {
         return dbResult[0]
       }
@@ -60,12 +60,12 @@ export class KnexDBDataProvider<Type = any, GraphbackContext = any> implements G
 
   // tslint:disable-next-line: no-reserved-keywords
   public async delete(data: Type): Promise<Type> {
-    const { id } = getDatabaseArguments(this.tableMap, data);
+    const { idField } = getDatabaseArguments(this.tableMap, data);
 
     // tslint:disable-next-line: await-promise
-    const beforeDelete = await this.db.select().from(this.tableName).where(id.field, '=', id.value);
+    const beforeDelete = await this.db.select().from(this.tableName).where(idField.name, '=', idField.value);
     // tslint:disable-next-line: await-promise
-    const dbResult = await this.db(this.tableName).where(id.field, '=', id.value).del()
+    const dbResult = await this.db(this.tableName).where(idField.name, '=', idField.value).del()
     if (dbResult && beforeDelete[0]) {
       return beforeDelete[0];
     }
