@@ -14,19 +14,13 @@ export interface TableID {
 
 export const getDatabaseArguments = (modelMap: ModelTableMap, data?: any, fieldMap?: any): TableDataMap => {
     const idField = modelMap.idField;
-    const tableDataMap: TableDataMap = {
-        idField: getTableId(idField, data),
-        data
-    }
-
-    if (tableDataMap.data) {
-        // tslint:disable-next-line: no-dynamic-delete
-        delete tableDataMap.data[idField];
-    }
 
     // TODO: Map fields to custom db names
 
-    return tableDataMap;
+    return {
+        idField: getTableId(idField, data),
+        data
+    }
 }
 
 function getTableId(idField: string, data: any = {}): TableID {
