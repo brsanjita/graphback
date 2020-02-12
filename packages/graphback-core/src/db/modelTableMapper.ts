@@ -1,8 +1,6 @@
-import { GraphQLField, GraphQLFieldMap, GraphQLObjectType, GraphQLSchema } from "graphql";
+import { GraphQLField, GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { parseDbAnnotations } from '../annotations/parser';
-import { getUserModels } from '../crud';
-import { getModelTypesFromSchema } from '../plugin/getModelTypesFromSchema';
-import { DatabaseNameTransformDirection, defaultColumnNameTransform, defaultTableNameTransform } from './defaultNameTransforms';
+import { defaultColumnNameTransform, defaultTableNameTransform } from './defaultNameTransforms';
 import { getPrimaryKey } from './getPrimaryKey';
 
 /**
@@ -20,62 +18,51 @@ export interface ModelTableMap {
   fieldMap?: any
 }
 
-export const findModelTableMappings = (schema: GraphQLSchema): ModelTableMap[] => {
-  const modelTypes = getModelTypesFromSchema(schema);
-  const models = getUserModels(modelTypes);
+export const buildModelTableMap = (model: GraphQLObjectType): ModelTableMap => {
+  const primaryKeyField = getPrimaryKey(model);
+  const tableName = getTableName(model);
+  const fieldMap = mapFieldsToColumns(model.getFields());
 
-  return mapModelsToTables(models);
-}
-
-export function getModelTableMapping(mappedType: GraphQLObjectType) {
-  // TODO 
-  // return mappings.find((m: ModelTableMapping) => m.typeName === modelName);
-}
-
-function mapModelsToTables(models: GraphQLObjectType[]): ModelTableMap[] {
-  return models.map((model: GraphQLObjectType) => {
-    return {
-      idField: getPrimaryKey(model).name,
-      typeName: model.name,
-      tableName: getTableOrColumnName(model),
-      fieldMap: mapFieldsToColumns(model.getFields())
-    }
-  });
+  return {
+    idField: primaryKeyField ? primaryKeyField.name : undefined,
+    typeName: model.name,
+    tableName,
+    fieldMap
+  }
 }
 
 function mapFieldsToColumns(fieldMap: GraphQLFieldMap<any, any>): any {
   return Object.values(fieldMap).reduce((obj: any, field: GraphQLField<any, any>) => {
-    const columnName = getTableOrColumnName(field);
+    const columnName = getColumnName(field);
 
     if (field.name !== columnName) {
       obj[field.name] = columnName;
     }
 
+    // TODO: Map relationship fields
 
     return obj;
   }, {});
 }
 
-export function getTableOrColumnName(modelOrField: GraphQLObjectType | GraphQLField<any, any>): string {
-  let transformedName = getMappedDatabaseName(modelOrField);
+export function getTableName(model: GraphQLObjectType): string {
+  let mappedTableName = defaultTableNameTransform(model.name, 'to-db');
 
-  const dbAnnotations = parseDbAnnotations(modelOrField);
-
+  const dbAnnotations = parseDbAnnotations(model);
   if (dbAnnotations.name) {
-    transformedName = dbAnnotations.name;
+    mappedTableName = dbAnnotations.name;
   }
 
-  return transformedName;
+  return mappedTableName;
 }
 
-function getMappedDatabaseName(modelOrField: GraphQLObjectType | GraphQLField<any, any>, direction: DatabaseNameTransformDirection = 'to-db'): string {
-  if (modelOrField instanceof GraphQLObjectType) {
-    return defaultTableNameTransform(modelOrField.name, direction);
+export function getColumnName(field: GraphQLField<any, any>): string {
+  let mappedColumnName = defaultColumnNameTransform(field.name, 'to-db');
+
+  const dbAnnotations = parseDbAnnotations(field);
+  if (dbAnnotations.name) {
+    mappedColumnName = dbAnnotations.name;
   }
 
-  return defaultColumnNameTransform(modelOrField.name, direction);
-}
-
-export function findModelTableMap(name: string, mappings: ModelTableMap[]) {
-  return mappings.find((m: ModelTableMap) => m.typeName === name);
+  return mappedColumnName;
 }
